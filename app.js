@@ -14,12 +14,12 @@ app.use(express.urlencoded({ extended: true }))
 
 
 ////routes initialization
-const controllerRoute = require("./routes/summaryRoute")
-
+const summaryRoute = require("./routes/summaryRoute")
+const reservationRoute = require("./routes/reservationRoutes")
 
 ///routes
-app.use("/summary",controllerRoute)
-
+app.use("/summary",summaryRoute)
+app.use("/reservation", reservationRoute)
 
 app.listen(3000,()=>{
     console.log("running")
