@@ -8,14 +8,18 @@ require("dotenv").config()
 
 //initializing mongoose
 require("./database/mongodb")
-const DB = require("./models/summaryModel")
 
-app.get("/summary",async(req,rep)=>{
+//without the below line earer forms cannot be parsed
+app.use(express.urlencoded({ extended: true }))
 
-    const allSummary = await DB.find()
-    rep.send(allSummary)
 
-})
+////routes initialization
+const controllerRoute = require("./routes/summaryRoute")
+
+
+///routes
+app.use("/summary",controllerRoute)
+
 
 app.listen(3000,()=>{
     console.log("running")
