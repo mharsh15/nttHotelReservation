@@ -1,6 +1,7 @@
 /* 
 This Mongoose schema stores user is and associated booking of user
-
+if booking is done then bumber 1 is used
+if booking is canceled its updated to zero
 
 */
 

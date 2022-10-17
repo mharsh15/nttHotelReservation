@@ -18,8 +18,11 @@ to run the concerned API, write node app.js in console
     :adds an reservation to a particular guest and updates summary database
 - /reservation/:id
     (POST)
-    :updates reservation status to false and updates summary database          
+    :updates reservation status to false and updates summary database
 
+- /reservation/search?from=<yyyy-dd-mm>&&to=<yyyy-mm-dd>              
+    (GET)
+    :finds all reservation in given date range, whether reservation is cancelled or completed or booked for future
 
 ### IDS for summary for testing
 - NTT Reservation: 634bda2e7554f49500745a11
@@ -56,7 +59,7 @@ to run the concerned API, write node app.js in console
 
 
     Result will be true with status code 200
-    if any validation fails, it will send a status code of 400 wirh value false
+    if any validation fails, it will send a status code of 400 with value false
 
  - */reservation/id (PUT)*
     - checks whether such a reservation exists and whether booking is not cancelled
@@ -73,7 +76,18 @@ to run the concerned API, write node app.js in console
     - if reservation is not available then status code will be sent as 400 and will send string as "Error"
 
 - */reservation (GET)*
-    - fetches all reservation present in database without any pagination
+    - fetches all reservation present in database without any pagination.
+    - this route is not doing any validation
+
+- */reservation?from=<yyyy-mm-dd>&to=<yyyy-mm-dd>
+    - fetches all reservation present in database between from and two date
+    - checks whether from date is less than two date
+    - checks whether concerned query parameter is a date or not
+    - if yes then it queries database in that particular date range for start date of reservation
+    - it displays all reservations, cancelled as well as booked reservation in concerned date range
+    - if no then it sends an status as 404 and 
+
+
 
 
 
@@ -119,7 +133,8 @@ to run the concerned API, write node app.js in console
     - will give below output or similar metadata with booking_status as 1 which means booking is not canceled
 
         {"_id":<your_id>,"guest_id":"634ce8c537d47ff033a41f3d","guest_name":"Zester","hotel_name":"Marriot","arrival_date":1668124800,"departure_date":1668556800,"booking_status":1,"base_stay_amount":2000,"tax_amount":360,"__v":0}
-    - if there is no reservation ID then
+
+    - if there is no reservation ID then response will be Error with status 400
 
 ### localhost:3000/reservation/id
     (PUT)
@@ -127,3 +142,39 @@ to run the concerned API, write node app.js in console
     if cancelled prior or send for cancelling booking 
     - response -> true status code 200
     else -> false status code 400
+
+### localhost:3000/reservation/search?from=<YYYY-MM-DD>&&to=<YYYY-MM-DD>
+    (GET)
+    - if Reservation within date range after calidation is found then it will send result as ab array
+    - else status code of 400 is sent with value "error" string
+    - if resut is available it will be sent as an array like one below
+    
+    [
+        {
+            "_id": "634cecc1c9188011291605a0",
+            "guest_id": "634ce8c537d47ff033a41f3d",
+            "guest_name": "Zester",
+            "hotel_name": "Marriot",
+            "arrival_date": 1668124800,
+            "departure_date": 1668556800,
+            "booking_status": 0,
+            "base_stay_amount": 2000,
+            "tax_amount": 360,
+            "__v": 0
+        },
+        {
+            "_id": "634cf2c094b12ac3cfed9acc",
+            "guest_id": "634ce8c537d47ff033a41f3d",
+            "guest_name": "Zester",
+            "hotel_name": "Marriot",
+            "arrival_date": 1668124800,
+            "departure_date": 1668556800,
+            "booking_status": 0,
+            "base_stay_amount": 2000,
+            "tax_amount": 360,
+            "__v": 0
+        }
+ 
+    ]
+
+    - if not then status of 400 with word error will be sent back

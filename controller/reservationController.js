@@ -12,10 +12,22 @@ const reservationStatusCode = require("../models/constantsData").reservationData
 // Handles reservation route
 const DBSummary = require("../models/summaryModel")
 const DBReservation = require("../models/reservationModel")
+const { arrival_date } = require("../models/reservationTeplate")
 
 
-/**adds reservation and does necessary updates to summary data basedatabase
-*
+/** adds reservation and does necessary updates to summary data basedatabase
+* checks whether all parameters are present
+* whehter respective field is number or string
+* whether date is date
+* once the confirmation is obtained from validaton function present in utils
+* the date(YYYY-MM-DD) is converted to unix by function in utils
+* booking code from models class is added
+* template from models class(reservation template) is used to add data to reduce mistakes
+*  data is persisted in reservation database
+*  if data persistance is successful then data is persisted in summary database
+*  total amount(tax+base) number of days(obtained by passing unix time), no of bookings is saved in ucoming stays part
+* and total amount(previous + upcoming) is added 
+* data is persisted to database
 */
 module.exports.addReservation = async(req,rep)=>{
 
@@ -69,15 +81,27 @@ module.exports.addReservation = async(req,rep)=>{
        rep.status(400).send({status:false,id:null})
 }
 
-/// get all reservations
+/// gets all reservations present in database - no validations
 module.exports.getAllReservations = async(req,rep) =>{
     const allReservations = await DBReservation.find()
     rep.send(allReservations)
 
 }
 
-//cancle an reservation
-//takes action on both reservation and summary databases to reflect accurate values
+/** cancles an reservation
+ * reservation id is obtained from params
+ * it is queried in DB 
+ * from that reservation guest_id is obtained which is querie in summary DB
+ * if reservation is present with bookin status code as 1 aka reservation is not cancelled
+ * reservation is cancelled
+ * from summary, total amount(tax +amount) is substracted along with number of nights
+ * stay ciunt is decremented by one
+ * cancelled stays is incremented by one
+ * data is persisted in datatbase 
+ * if data is not found or guest_id is not found then fals is sent as response along with status code as 400
+ * takes action on both reservation and summary databases to reflect accurate values
+
+*/
 module.exports.cancelReservation = async(req,rep) =>{
     try{
         //checks reservations
@@ -111,7 +135,13 @@ module.exports.cancelReservation = async(req,rep) =>{
 
 }
 
-//get a particular reservation
+/** get a particular reservation
+ * id paramater is obtained from url
+ * id is passed to database to query
+ * if ID is found, reservation is retureed as it is 
+ * if reservation is not found, catch block cateches itm sends status as 400 with string error
+
+*/
 module.exports.findOneReservation = async(req,rep)=>{
     try{
     
@@ -121,10 +151,42 @@ module.exports.findOneReservation = async(req,rep)=>{
            return rep.send(reservation)
         }
         
-        rep.status(400).send("Error")
+        rep.status(400).send("error")
     }
     catch(error){
         console.log(error)
         rep.status(400).send("error")
     }
+}
+
+/**
+ * Route takes two paramaters as query from and to
+ * from and to needs to be in YYYY-MM-DD asa 2022-11-01
+ * checks difference between date
+ * if everything is ok, an array will be sent, if no data is found array will be empty
+ * if any error happens then status code sent will be 400 with word error
+ */
+module.exports.findReservationInDateRange = async(req,rep)=>{
+    const {from, to} =req.query
+    try{
+        const fromDate = utils.convertDateToUnix(from)
+        const toDate = utils.convertDateToUnix(to)
+        const difference = utils.convertUnixTimeToDays(fromDate,toDate)
+       
+        if(difference > 0 ){
+            const searchData = await DBReservation.find({arrival_date:{$lte:toDate,$gte:fromDate}})
+            return rep.send(searchData)
+        }
+
+        rep.status(400).send("error")
+
+    }
+
+    catch(error){
+        console.log(error)
+        rep.status(400).send("error")
+        
+    }
+
+
 }
