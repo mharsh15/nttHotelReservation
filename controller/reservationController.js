@@ -14,7 +14,9 @@ const DBSummary = require("../models/summaryModel")
 const DBReservation = require("../models/reservationModel")
 
 
-//adds reservation and updates database
+/**adds reservation and does necessary updates to summary data basedatabase
+*
+*/
 module.exports.addReservation = async(req,rep)=>{
 
        const  {id} = req.body
@@ -58,10 +60,13 @@ module.exports.addReservation = async(req,rep)=>{
                 await summary.save()
             }
 
-            return rep.send(true)
+            return rep.send({
+                status:true,
+                id:saved.id
+            })
        }
 
-       rep.status(400).send(false)
+       rep.status(400).send({status:false,id:null})
 }
 
 /// get all reservations
@@ -83,7 +88,7 @@ module.exports.cancelReservation = async(req,rep) =>{
         const summary = await DBSummary.findById(reservation.guest_id)
         //if reservation is booked only then action is taken otherwise status code is sent its cancelled
         if(reservation.booking_status === reservationStatusCode.booked){
-            reservation.status = reservationStatusCode.cancelled
+            reservation.booking_status = reservationStatusCode.cancelled
             const cost = reservation.tax_amount +reservation.base_stay_amount
             const days = utils.convertUnixTimeToDays(reservation.arrival_date,reservation.departure_date)
             summary.upcoming_stays.total_amount -= cost
@@ -104,4 +109,22 @@ module.exports.cancelReservation = async(req,rep) =>{
         rep.status(400).send(false)
     }
 
+}
+
+//get a particular reservation
+module.exports.findOneReservation = async(req,rep)=>{
+    try{
+    
+        const {id} = req.params
+        const reservation = await DBReservation.findById(id)
+        if(reservation){
+           return rep.send(reservation)
+        }
+        
+        rep.status(400).send("Error")
+    }
+    catch(error){
+        console.log(error)
+        rep.status(400).send("error")
+    }
 }

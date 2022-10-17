@@ -27,7 +27,7 @@ async function insertData(){
                     total_amount:8000
                 },
                 cancelled_stays:0,
-                total_stays:3
+                total_stays:12000
             },
         
             {
@@ -43,7 +43,7 @@ async function insertData(){
                     total_amount:8000
                 },
                 cancelled_stays:0,
-                total_stays:3
+                total_stays:12000
             },
             {
                 name:"Olaf Schultz",
@@ -58,7 +58,7 @@ async function insertData(){
                     total_amount:86000
                 },
                 cancelled_stays:5,
-                total_stays:10
+                total_stays:86000
             },
         
             {
@@ -74,7 +74,7 @@ async function insertData(){
                     total_amount:0
                 },
                 cancelled_stays:0,
-                total_stays:5
+                total_stays:89000
             },
             {
                 name:"Gioria Meloni",
@@ -89,7 +89,7 @@ async function insertData(){
                     total_amount:0
                 },
                 cancelled_stays:1,
-                total_stays:1
+                total_stays:1800
             },
         
             {
@@ -105,7 +105,22 @@ async function insertData(){
                     total_amount:12000000
                 },
                 cancelled_stays:5,
-                total_stays:4
+                total_stays:1240000
+            },
+            {
+                name:"Harsh TEST",
+                upcoming_stays:{
+                    total_stays:0,
+                    total_nights:0,
+                    total_amount:0
+                },
+                past_stays:{
+                    total_stays:0,
+                    total_nights:0,
+                    total_amount:0
+                },
+                cancelled_stays:0,
+                total_stays:0
             },
             {
                 name:"NTT TEST",

@@ -6,7 +6,8 @@ const contorller = require("../controller/reservationController")
 router
 .get("/",contorller.getAllReservations)
 .post("/", contorller.addReservation)
-.post("/:id",contorller.cancelReservation)
+.get("/:id",contorller.findOneReservation)
+.put("/:id",contorller.cancelReservation)
 
 
 module.exports = router

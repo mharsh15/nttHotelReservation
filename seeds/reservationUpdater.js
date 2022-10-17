@@ -19,4 +19,4 @@ async function findOneAndDelete(){
     await DB.findByIdAndDelete(id)
 }
 //deleteAll()
-findOneAndDelete()
+//findOneAndDelete()
