@@ -20,7 +20,7 @@ to run the concerned API, write node app.js in console
     (POST)
     :updates reservation status to false and updates summary database
 
-- /reservation/search?from="yyyy-dd-mm"&&to="yyyy-mm-dd"              
+- /reservation/search?from="yyyy-dd-mm"&to="yyyy-mm-dd"              
     (GET)
     :finds all reservation in given date range, whether reservation is cancelled or completed or booked for future
 
