@@ -18,9 +18,15 @@ const summaryRoute = require("./routes/summaryRoute")
 const reservationRoute = require("./routes/reservationRoutes")
 
 ///routes
+app.get("/", (req,rep)=>{ rep.send("This is Test")})
 app.use("/summary",summaryRoute)
 app.use("/reservation", reservationRoute)
 
+
+app.get("*", (req,rep)=>{
+    rep.status(404).send("Oops No Such Route Exists")
+
+})
 
 app.listen(3000,()=>{
     console.log("running")

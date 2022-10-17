@@ -79,7 +79,7 @@ to run the concerned API, write node app.js in console
     - fetches all reservation present in database without any pagination.
     - this route is not doing any validation
 
-- */reservation?from=<yyyy-mm-dd>&to=<yyyy-mm-dd>
+- */reservation?from="yyyy-mm-dd"&to="yyyy-mm-dd"
     - fetches all reservation present in database between from and two date
     - checks whether from date is less than two date
     - checks whether concerned query parameter is a date or not
@@ -93,12 +93,14 @@ to run the concerned API, write node app.js in console
 
 ## Application Testing
  - database has eight entries for summary database
-  Summary ID for Testing : 634bda2e7554f49500745a11
+ - Summary ID for Testing : 634bda2e7554f49500745a11
+ -   
   ### localhost:3000/summary 
     (GET)
     - when no change is done, it should display 8 results
     -  the name for your test is NTT Test.
     - all values should be zero like a fresh user
+
 
   ### localhost:3000/reservation 
     (POST)
